@@ -2,7 +2,9 @@
 A standalone app for Amazon Prime Music/Amazon Music Unlimited.
 
 ## Installation
-[Packages are available in `deb` and `rpm` format](https://github.com/oja/amazon-music-linux/releases).
+
+### Prebuilt packages
+`.deb` and `.rpm` packages can be downloaded [from the releases page](https://github.com/oja/amazon-music-linux/releases).
 
 ### Building from source
 ```
