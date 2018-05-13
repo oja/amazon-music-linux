@@ -1,0 +1,19 @@
+{
+  "name": "amazon-music-linux",
+  "version": "0.1.0",
+  "main": "main.js",
+  "description": "unofficial amazon music player for linux",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oja/amazon-music-linux.git"
+  },
+  "author": "Ojas Ahuja",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/oja/amazon-music-linux/issues"
+  },
+  "homepage": "https://github.com/oja/amazon-music-linux#readme"
+}
