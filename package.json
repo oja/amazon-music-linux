@@ -1,10 +1,12 @@
 {
   "name": "amazon-music-linux",
+  "productName": "Amazon Music",
   "version": "0.1.0",
   "main": "main.js",
   "description": "unofficial amazon music player for linux",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "package-linux": "electron-packager .  amazon-music-linux --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/favicon.png --prune=true --out=release-builds"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/oja/amazon-music-linux/issues"
   },
-  "homepage": "https://github.com/oja/amazon-music-linux#readme"
+  "homepage": "https://github.com/oja/amazon-music-linux#readme",
+  "devDependencies": {
+    "electron": "^2.0.0",
+    "electron-packager": "^12.0.2"
+  }
 }
