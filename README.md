@@ -9,7 +9,7 @@ A standalone app for Amazon Prime Music/Amazon Music Unlimited.
 ### Building from source
 ```
 git clone https://github.com/oja/amazon-music-linux
-cs amazon-music-linux
+cd amazon-music-linux
 npm install
 npm run package-linux
 ```
@@ -19,7 +19,7 @@ Then, depending on whether you want to build for Ubuntu/Debian or Fedora/openSUS
 - Ubuntu/Debian:
   ```
   sudo npm install -g electron-installer-debian
-  electron-installer-debian --src release-builds/amazon-music-linux-linux-x64/ --arch x86_64 --config build-config.json
+  electron-installer-debian --src release-builds/amazon-music-linux-linux-x64/ --arch amd64 --config build-config.json
   ```
 
 - Fedora/openSUSE:
