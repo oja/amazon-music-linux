@@ -6,7 +6,7 @@
   "description": "unofficial amazon music player for linux",
   "scripts": {
     "start": "electron .",
-    "package-linux": "electron-packager .  amazon-music-linux --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/favicon.png --prune=true --out=release-builds"
+    "package-linux": "electron-packager .  amazon-music-linux --overwrite --asar --platform=linux --arch=x64 --icon=assets/favicon.png --prune=true --out=release-builds"
   },
   "repository": {
     "type": "git",
