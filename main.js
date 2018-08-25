@@ -11,20 +11,21 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-    mainWindow = new BrowserWindow({
-	title: "Amazon Music",
-	name: "Amazon Music",
-	width: 1200,
-	height: 800,
-	icon: path.join(__dirname, 'assets/favicon.png'),
-    });
-    mainWindow.setMenu(null);
+  mainWindow = new BrowserWindow({
+    title: "Amazon Music",
+    name: "Amazon Music",
+    width: 1200,
+    height: 800,
+    icon: path.join(__dirname, 'assets/favicon.png'),
+  });
+  mainWindow.setMenu(null);
+  mainWindow.webContents.openDevTools()
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname, 'main/index.html'),
     protocol: 'file:',
     slashes: true
   }))
