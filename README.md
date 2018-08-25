@@ -30,6 +30,9 @@ Then, depending on whether you want to build for Ubuntu/Debian or Fedora/openSUS
 
 The output `.deb` or `.rpm` file will be in the `release-builds/` directory.
 
+## Troubleshooting
+- If you get an error about `libXss.so.1`, install `libXScrnSaver` or equivalent.
+
 ## TODO
 - Media keys support (pause/play, next, last)
 - Modify title to playing song
