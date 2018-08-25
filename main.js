@@ -1,11 +1,9 @@
-const electron = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+const { BrowserWindow, ipcMain, app } = require('electron')
 
 const path = require('path')
 const url = require('url')
+
+const { APP_NAME } = require('./const.js')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -14,8 +12,8 @@ let mainWindow
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    title: "Amazon Music",
-    name: "Amazon Music",
+    title: APP_NAME,
+    name: APP_NAME,
     width: 1200,
     height: 800,
     icon: path.join(__dirname, 'assets/favicon.png'),
@@ -61,6 +59,10 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+ipcMain.on('appendTitle', function (event, arg) {
+  mainWindow.setTitle(`${APP_NAME}\t${arg}`);
 })
 
 // In this file you can include the rest of your app's specific main process
