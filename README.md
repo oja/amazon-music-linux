@@ -34,7 +34,6 @@ The output `.deb` or `.rpm` file will be in the `release-builds/` directory.
 - If you get an error about `libXss.so.1`, install `libXScrnSaver` or equivalent.
 
 ## TODO
-- Media keys support (pause/play, next, last)
 
 ## Legal Disclaimer
 No affiliation with Amazon.com, Inc. All trademarks and registered trademarks are the property of their respective owners.

@@ -1,4 +1,13 @@
-const { ipcRenderer } = require('electron');
+/**
+ * @author Flo Dörr
+ * @email flo@dörr.site
+ * @create date 2018-08-26 02:38:43
+ * @modify date 2018-08-26 03:26:19
+ * @desc the index.html's renderer
+*/
+const { ipcRenderer, remote } = require('electron');
+const { getTitle } = remote.require('./main');
+const { APP_NAME } = require('../const');
 
 let output;
 let webview;
@@ -35,26 +44,95 @@ onload = () => {
     webview.addEventListener('console-message', log(event))
 }
 
+
+/**
+ * loading start listener
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
 start = () => {
     output.innerText = 'loading...'
 }
 
+/**
+ * loading end listener
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
 end = () => {
     output.innerText = ''
 }
 
+/**
+ * DOM ready listener
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
 ready = () => {
-    console.log('ready!');
+    
 }
 
+/**
+ * media started listener
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
 musicStarted = () => {
-    webview.executeJavaScript("__am.getTitle();", false, (title) => { ipcRenderer.send('appendTitle', title) })
+    webview.executeJavaScript("__am.getTitle();", false, (title) => {
+        if (getTitle() != `${APP_NAME}\t${title}`) {
+            ipcRenderer.send('appendTitle', title)
+        }else{
+            setTimeout(musicStarted, 500)
+        }
+    })
 }
 
+/**
+ * media paused listener
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
 musicPaused = () => {
     ipcRenderer.send('appendTitle', '')
 }
 
+/**
+ * console log listener
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
 log = (event) => {
     console.log('guest: ' + event.message);
 }
+
+
+/**
+ * handels the 'play and pause' key
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcRenderer.on('playAndPause', () => {
+    webview.executeJavaScript("__am.playAndPauseMusic();")
+});
+
+/**
+ * handels 'the next track' key
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcRenderer.on('nextTrack', () => {
+    webview.executeJavaScript("__am.nextTrack();", false, () => {
+        musicStarted();
+    })
+});
+
+/**
+ * handels 'the previous track' key
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcRenderer.on('previousTrack', () => {
+    webview.executeJavaScript("__am.previousTrack();", false, () => {
+        musicStarted();
+    })
+});

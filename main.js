@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain, app } = require('electron')
+const { BrowserWindow, ipcMain, app, globalShortcut } = require('electron')
 
 const path = require('path')
 const url = require('url')
@@ -28,7 +28,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -61,9 +61,83 @@ app.on('activate', function () {
   }
 })
 
+/**
+ * appends a string to the app's title
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
 ipcMain.on('appendTitle', function (event, arg) {
   mainWindow.setTitle(`${APP_NAME}\t${arg}`);
 })
+
+/**
+ * is executed when electron is done loading
+ * the following code is going to register the media keys
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+app.on('ready', () => {
+  if (globalShortcut.register('mediaplaypause', playAndPause)) {
+    console.log('mediaplaypause registered!');
+  } else {
+    console.log('mediaplaypause NOT registered!');
+  }
+
+  if (globalShortcut.register('medianexttrack', nextTrack)) {
+    console.log('medianexttrack registered!');
+  } else {
+    console.log('medianexttrack NOT registered!');
+  }
+
+  if (globalShortcut.register('mediaprevioustrack', previousTrack)) {
+    console.log('mediaprevioustrack registered!');
+  } else {
+    console.log('mediaprevioustrack NOT registered!');
+  }
+
+  if (globalShortcut.register('mediastop', playAndPause)) {
+    console.log('mediastop registered!');
+  } else {
+    console.log('mediastop NOT registered!');
+  }
+})
+
+/**
+ * handels the 'play and pause' key
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+function playAndPause() {
+  mainWindow.webContents.send('playAndPause')
+}
+
+/**
+ * handels 'the next track' key
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+function nextTrack() {
+  mainWindow.webContents.send('nextTrack')
+}
+
+/**
+ * handels 'the previous track' key
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+function previousTrack() {
+  mainWindow.webContents.send('previousTrack')
+}
+
+/**
+ * handels 'the previous track' key
+ * 
+ * @returns the current app title
+ * @author Flo Dörr <flo@dörr.site>
+ */
+exports.getTitle = function getTitle() {
+  return mainWindow.getTitle();
+}
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
