@@ -1,13 +1,16 @@
-const { BrowserWindow, ipcMain, app, globalShortcut } = require('electron')
+const { BrowserWindow, ipcMain, app, globalShortcut, Tray, Menu, nativeImage } = require('electron')
 
 const path = require('path')
 const url = require('url')
+const fs = require('fs')
+const request = require('request')
 
 const { APP_NAME } = require('./const.js')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let tray
 
 function createWindow() {
   // Create the browser window.
@@ -28,7 +31,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -37,6 +40,15 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  tray = new Tray('assets/favicon.png')
+  const contextMenu = Menu.buildFromTemplate([
+    { label: '⏭️ next track', type: 'normal', click: nextTrack },
+    { label: '⏯️ play/pause', type: 'normal', click: playAndPause },
+    { label: '⏮️ previous track', type: 'normal', click: previousTrack },
+  ])
+  tray.setToolTip('Test')
+  tray.setContextMenu(contextMenu)
 }
 
 // This method will be called when Electron has finished
@@ -68,6 +80,29 @@ app.on('activate', function () {
  */
 ipcMain.on('appendTitle', function (event, arg) {
   mainWindow.setTitle(`${APP_NAME}\t${arg}`);
+})
+
+/**
+ * sets an image as tray icon
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+
+var options = {
+  url,
+  method: 'get',
+  encoding: null
+}
+
+ipcMain.on('setTrayImage', function (event, arg) {
+  options.url = arg
+  request(options, (err, resp, body) => {
+    if(!err){
+      tray.setImage(nativeImage.createFromBuffer(body));
+    }else{
+      tray.setImage('assets/favicon.png');
+    }
+  })
 })
 
 /**

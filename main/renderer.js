@@ -2,7 +2,7 @@
  * @author Flo Dörr
  * @email flo@dörr.site
  * @create date 2018-08-26 02:38:43
- * @modify date 2018-08-26 03:26:19
+ * @modify date 2018-08-27 02:28:53
  * @desc the index.html's renderer
 */
 const { ipcRenderer, remote } = require('electron');
@@ -69,7 +69,7 @@ end = () => {
  * @author Flo Dörr <flo@dörr.site>
  */
 ready = () => {
-    
+    // webview.openDevTools()
 }
 
 /**
@@ -84,6 +84,9 @@ musicStarted = () => {
         }else{
             setTimeout(musicStarted, 500)
         }
+    })
+    webview.executeJavaScript('__am.getSongImage();', false, (image) => {
+        ipcRenderer.send('setTrayImage', image)
     })
 }
 
