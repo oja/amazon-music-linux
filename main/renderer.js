@@ -33,6 +33,9 @@ onload = () => {
         case "es":
             lang = "es"
             break;
+        case "in":
+            lang = "in"
+            break;
         default:
             lang = "com"
     }
