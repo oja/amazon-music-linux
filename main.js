@@ -30,7 +30,7 @@ function createWindow() {
     slashes: true
   }))
 
-  // Open the DevTools.
+  // Open the DevTools.       DEBUG!!!!!!
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
@@ -97,9 +97,9 @@ var options = {
 ipcMain.on('setTrayImage', function (event, arg) {
   options.url = arg
   request(options, (err, resp, body) => {
-    if(!err){
+    if (!err) {
       tray.setImage(nativeImage.createFromBuffer(body));
-    }else{
+    } else {
       tray.setImage('assets/favicon.png');
     }
   })
@@ -173,6 +173,15 @@ function previousTrack() {
 exports.getTitle = function getTitle() {
   return mainWindow.getTitle();
 }
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcMain.on('lyrics', (event, arg) => {
+  mainWindow.webContents.send('lyrics', arg)
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
