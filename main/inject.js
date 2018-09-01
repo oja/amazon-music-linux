@@ -2,7 +2,7 @@
  * @author Flo Dörr
  * @email flo@dörr.site
  * @create date 2018-08-26 03:22:35
- * @modify date 2018-08-27 02:28:41
+ * @modify date 2018-09-01 06:15:10
  * @desc file to be injected into amazon music
 */
 __am = {
@@ -22,5 +22,58 @@ __am = {
         document.getElementsByClassName('button previousButton icon-fastBackward transportButton')[0].click()
     }, getSongImage: function () {
         return document.getElementsByClassName('renderImage')[0].src
-    }
+    }, getCurrentSongText: function () {
+        setTimeout(() => {
+            __am.getLines();
+            __am.lyricsInterval = setInterval(__am.getLines, 600)
+        }, 300)
+    }, getLines: function (callback) {
+        try {
+            const lines = document.getElementsByClassName('nowPlayingLyricsContainer')[0].children[0].children;
+            if (lines != undefined) {
+                if (__am.highlighted == null || __am.highlighted == undefined) {
+                    __am.highlighted = __am.getStart(lines);
+                    __am.sendToElectron(__am.highlighted.innerHTML)
+
+                }
+
+                if (__am.highlighted != undefined && document.getElementById(__am.highlighted.id).classList.item(1) != 'highlighted') {
+                    __am.highlighted = document.getElementById(__am.highlighted.id).nextSibling
+                    __am.sendToElectron(__am.highlighted.innerHTML)
+                }
+            }
+        } catch (error) {
+            __am.clearInterval();
+            __am.getCurrentSongText();
+        }
+    }, getStart: function (lines) {
+        try {
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].classList.length == 2) {
+                    return lines[i]
+                }
+            }
+        } catch (error) {
+            __am.clearInterval();
+            __am.getCurrentSongText();
+        }
+    }, clearInterval: function () {
+        if (__am.lyricsInterval != undefined) {
+            clearInterval(__am.lyricsInterval)
+            __am.lyricsInterval = undefined
+        }
+        if (__am.highlighted != undefined) {
+            __am.highlighted = undefined
+        }
+    }, hasSongText: function () {
+        return document.getElementsByClassName('lyricsBadge')[0].classList.length == 1
+    }, sendToElectron: function (text) {
+        if (text.includes('playingEqualizer')) {
+            __am.ipcRenderer.send('lyrics', '<img src="https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif" />')
+        } else {
+            __am.ipcRenderer.send('lyrics', text)
+        }
+    }, highlighted: undefined
+    , lyricsInterval: undefined
+    , ipcRenderer: require('electron').ipcRenderer
 }
