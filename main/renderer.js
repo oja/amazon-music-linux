@@ -9,13 +9,13 @@ const { ipcRenderer, remote } = require('electron');
 const { getTitle } = remote.require('./main');
 const { APP_NAME } = require('../const');
 
-let output;
-let webview;
+let output, outputWrapper, webview;
 let expanded = true;
 let blueLoop = '<img src="https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif" />'
 onload = () => {
     webview = document.getElementById('amazon-music-webview');
     output = document.getElementById('output');
+    outputWrapper = document.getElementById('output-wrapper');
     let lang;
     switch (navigator.language.split('-')[0]) {
         case "en":
@@ -127,6 +127,7 @@ log = (event) => {
 
 showOutput = () => {
     if (expanded) {
+        outputWrapper.style.visibility = 'visible'
         webview.style.height = '97%'
         expanded = false
     }
@@ -134,6 +135,7 @@ showOutput = () => {
 
 closeOutput = () => {
     if (!expanded) {
+        outputWrapper.style.visibility = 'hidden'
         webview.style.height = '100%'
         expanded = true
     }

@@ -11,6 +11,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
+      overflow: hidden;
     }
 
     webview {
@@ -21,7 +22,8 @@
       transition: height 0.5s;
     }
 
-    b {
+    b,
+    .output-wrapper {
       font-family: 'Roboto', sans-serif;
       text-align: center;
       display: block;
@@ -34,7 +36,9 @@
 
 <body>
   <webview id="amazon-music-webview" preload="inject.js"></webview>
-  <b id="output"><img src="https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif" /></b>
+  <div id="output-wrapper">
+    <b id="output"><img src="https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif"/></b>
+  </div>
 
 
 

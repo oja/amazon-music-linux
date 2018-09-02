@@ -2,24 +2,28 @@ const { BrowserWindow, ipcMain, app, globalShortcut, Tray, Menu, nativeImage } =
 
 const path = require('path')
 const url = require('url')
-const fs = require('fs')
 const request = require('request')
+const isDev = require('electron-is-dev');
 
 const { APP_NAME } = require('./const.js')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
-let tray
+let mainWindow, tray, imageLocation
 
 function createWindow() {
+  if (isDev) {
+    imageLocation = 'assets/favicon.png'
+  } else {
+    imageLocation = __dirname.replace('/resources/app.asar', '') + '/resources/favicon.png'
+  }
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: APP_NAME,
     name: APP_NAME,
     width: 1200,
     height: 800,
-    icon: path.join(__dirname, 'assets/favicon.png'),
+    icon: path.join(__dirname, imageLocation),
   });
   mainWindow.setMenu(null);
 
@@ -41,7 +45,7 @@ function createWindow() {
     mainWindow = null
   })
 
-  tray = new Tray('assets/favicon.png')
+  tray = new Tray(imageLocation)
   const contextMenu = Menu.buildFromTemplate([
     { label: '⏭️ next track', type: 'normal', click: nextTrack },
     { label: '⏯️ play/pause', type: 'normal', click: playAndPause },
@@ -100,7 +104,7 @@ ipcMain.on('setTrayImage', function (event, arg) {
     if (!err) {
       tray.setImage(nativeImage.createFromBuffer(body));
     } else {
-      tray.setImage('assets/favicon.png');
+      tray.setImage(imageLocation);
     }
   })
 })
