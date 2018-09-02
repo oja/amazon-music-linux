@@ -50,9 +50,28 @@ function createWindow() {
     { label: '⏭️ next track', type: 'normal', click: nextTrack },
     { label: '⏯️ play/pause', type: 'normal', click: playAndPause },
     { label: '⏮️ previous track', type: 'normal', click: previousTrack },
+    { label: '⏹️ Quit', click: () => { app.isQuitting = true; app.quit(); } }
   ])
-  tray.setToolTip('Test')
+  tray.setToolTip('Amazon Music')
   tray.setContextMenu(contextMenu)
+
+  tray.on('click', () => {
+    mainWindow.show();
+  })
+
+  mainWindow.on('minimize', function (event) {
+    event.preventDefault();
+    mainWindow.hide();
+  });
+
+  mainWindow.on('close', (event) => {
+    if (!app.isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+
+    return false;
+  })
 }
 
 // This method will be called when Electron has finished
