@@ -97,11 +97,11 @@ musicStarted = () => {
         ipcRenderer.send('setTrayImage', image)
     })
     webview.executeJavaScript("__am.hasSongText();", false, (textAv) => {
-        if (textAv) {
-            webview.executeJavaScript("__am.clearInterval();", false, () => {
+        webview.executeJavaScript("__am.clearInterval();", false, () => {
+            if (textAv) {
                 webview.executeJavaScript("__am.getCurrentSongText();")
-            })
-        }
+            }
+        })
     })
 }
 
