@@ -47,16 +47,17 @@ function createWindow() {
 
   tray = new Tray(imageLocation)
   const contextMenu = Menu.buildFromTemplate([
-    { label: '⏭️ next track', type: 'normal', click: nextTrack },
-    { label: '⏯️ play/pause', type: 'normal', click: playAndPause },
-    { label: '⏮️ previous track', type: 'normal', click: previousTrack },
+    { label: '🎵 Toggle App', click: () => {mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()} },
+    { label: '⏭️ Next Track', type: 'normal', click: nextTrack },
+    { label: '⏯️ Play/Pause', type: 'normal', click: playAndPause },
+    { label: '⏮️ Previous Track', type: 'normal', click: previousTrack },
     { label: '⏹️ Quit', click: () => { app.isQuitting = true; app.quit(); } }
   ])
   tray.setToolTip('Amazon Music')
   tray.setContextMenu(contextMenu)
 
   tray.on('click', () => {
-    mainWindow.show();
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
   })
 
   mainWindow.on('minimize', function (event) {
