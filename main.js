@@ -12,8 +12,19 @@ const { APP_NAME } = require('./const.js')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow, tray, imageLocation, settingsWindow
 
+let shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+  if (mainWindow) {
+    mainWindow.show()
+  }
+})
+
+if (shouldQuit) {
+  app.quit()
+  return
+}
+
 function createWindow() {
-  if(!settings.has('autoLanguage')){
+  if (!settings.has('autoLanguage')) {
     settings.set('autoLanguage', true)
     settings.set('language', 'com')
     console.log('init set settings.');
@@ -55,7 +66,7 @@ function createWindow() {
 
   tray = new Tray(imageLocation)
   const contextMenu = Menu.buildFromTemplate([
-    { label: '🎵 Toggle App', click: () => {mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()} },
+    { label: '🎵 Toggle App', click: () => { mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show() } },
     { label: '⏭️ Next Track', type: 'normal', click: nextTrack },
     { label: '⏯️ Play/Pause', type: 'normal', click: playAndPause },
     { label: '⏮️ Previous Track', type: 'normal', click: previousTrack },
