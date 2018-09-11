@@ -34,7 +34,7 @@ The output `.deb` or `.rpm` file will be in the `release-builds/` directory.
 - If you get an error about `libXss.so.1`, install `libXScrnSaver` or equivalent.
 
 ## TODO
-- Add a Settings Page to turn off lyrics feature ([#10](https://github.com/oja/amazon-music-linux/pull/10))
+
 
 ## Legal Disclaimer
 No affiliation with Amazon.com, Inc. All trademarks and registered trademarks are the property of their respective owners.

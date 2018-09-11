@@ -2,7 +2,7 @@
  * @author Flo Dörr
  * @email flo@dörr.site
  * @create date 2018-08-26 02:38:43
- * @modify date 2018-09-11 08:38:41
+ * @modify date 2018-09-11 09:19:51
  * @desc the index.html's renderer
 */
 const { ipcRenderer, remote } = require('electron');
@@ -42,7 +42,7 @@ onload = () => {
             default:
                 lang = "com"
         }
-    }else{
+    } else {
         lang = settings.get('language')
     }
     webview.setAttribute('src', `https://music.amazon.${lang}/home?output=embed`);
@@ -105,13 +105,15 @@ musicStarted = () => {
     webview.executeJavaScript('__am.getSongImage();', false, (image) => {
         ipcRenderer.send('setTrayImage', image)
     })
-    webview.executeJavaScript("__am.hasSongText();", false, (textAv) => {
-        webview.executeJavaScript("__am.clearInterval();", false, () => {
-            if (textAv) {
-                webview.executeJavaScript("__am.getCurrentSongText();")
-            }
+    if (settings.get('lyrics')) {
+        webview.executeJavaScript("__am.hasSongText();", false, (textAv) => {
+            webview.executeJavaScript("__am.clearInterval();", false, () => {
+                if (textAv) {
+                    webview.executeJavaScript("__am.getCurrentSongText();")
+                }
+            })
         })
-    })
+    }
 }
 
 /**

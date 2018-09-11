@@ -2,12 +2,12 @@
  * @author Flo Dörr
  * @email flo@dörr.site
  * @create date 2018-08-26 02:38:43
- * @modify date 2018-09-11 08:38:36
+ * @modify date 2018-09-11 09:19:46
  * @desc the index.html's renderer
 */
 const settings = require('electron-settings');
 
-let regionByOSCheckbox, regionDropdown, regionByOS, setRegion, dropdownMenuButton
+let regionByOSCheckbox, regionDropdown, regionByOS, setRegion, dropdownMenuButton, lyricsCheck
 
 onload = () => {
     regionByOS = document.getElementById('region-by-os')
@@ -15,8 +15,10 @@ onload = () => {
     setRegion = document.getElementById('select-region')
     regionDropdown = setRegion.children[0].children[1].children[0].children[0]
     dropdownMenuButton = document.getElementById('dropdownMenuButton')
+    lyricsCheck = document.getElementById('lyrics-check')
 
     regionByOSCheckbox.checked = settings.get('autoLanguage')
+    lyricsCheck.checked = settings.get('lyrics')
 
     if (settings.has('language')) {
         dropdownMenuButton.innerText = settings.get('language')
@@ -30,11 +32,14 @@ onload = () => {
     document.getElementById('in').addEventListener('click', () => { langChanged('in') })
 
 
-    regionByOSCheckbox.addEventListener('change', checkboxChanged)
-    checkboxChanged();
+    regionByOSCheckbox.addEventListener('change', regionCheckboxChanged)
+    regionCheckboxChanged();
+
+    lyricsCheck.addEventListener('change', lyricsCheckboxChanged)
+    lyricsCheckboxChanged();
 }
 
-checkboxChanged = () => {
+regionCheckboxChanged = () => {
     if (regionByOSCheckbox.checked) {
         settings.set('language', undefined)
         settings.set('autoLanguage', true)
@@ -42,6 +47,14 @@ checkboxChanged = () => {
     } else {
         settings.set('autoLanguage', false)
         regionDropdown.disabled = false;
+    }
+}
+
+lyricsCheckboxChanged = () => {
+    if (lyricsCheck.checked) {
+        settings.set('lyrics', true)
+    } else {
+        settings.set('lyrics', false)
     }
 }
 

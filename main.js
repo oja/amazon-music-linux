@@ -29,6 +29,10 @@ function createWindow() {
     settings.set('language', 'com')
     console.log('init set settings.');
   }
+  if (!settings.has('lyrics')) {
+    settings.set('lyrics', true)
+    console.log('init set settings lyrics.');
+  }
   if (isDev) {
     imageLocation = 'assets/favicon.png'
   } else {
