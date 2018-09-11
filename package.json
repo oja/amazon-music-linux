@@ -24,6 +24,7 @@
   "homepage": "https://github.com/oja/amazon-music-linux#readme",
   "dependencies": {
     "electron-is-dev": "^0.3.0",
+    "electron-settings": "^3.2.0",
     "path": "^0.12.7",
     "request": "^2.88.0",
     "url": "^0.11.0"

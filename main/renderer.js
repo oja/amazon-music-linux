@@ -2,12 +2,14 @@
  * @author Flo Dörr
  * @email flo@dörr.site
  * @create date 2018-08-26 02:38:43
- * @modify date 2018-09-01 06:15:04
+ * @modify date 2018-09-11 08:38:41
  * @desc the index.html's renderer
 */
 const { ipcRenderer, remote } = require('electron');
 const { getTitle } = remote.require('./main');
 const { APP_NAME } = require('../const');
+const isDev = require('electron-is-dev');
+const settings = require('electron-settings');
 
 let output, outputWrapper, webview;
 let expanded = true;
@@ -17,27 +19,31 @@ onload = () => {
     output = document.getElementById('output');
     outputWrapper = document.getElementById('output-wrapper');
     let lang;
-    switch (navigator.language.split('-')[0]) {
-        case "en":
-            lang = "com"
-            break;
-        case "de":
-            lang = "de"
-            break;
-        case "fr":
-            lang = "fr"
-            break;
-        case "it":
-            lang = "it"
-            break;
-        case "es":
-            lang = "es"
-            break;
-        case "in":
-            lang = "in"
-            break;
-        default:
-            lang = "com"
+    if (settings.get('autoLanguage')) {
+        switch (navigator.language.split('-')[0]) {
+            case "en":
+                lang = "com"
+                break;
+            case "de":
+                lang = "de"
+                break;
+            case "fr":
+                lang = "fr"
+                break;
+            case "it":
+                lang = "it"
+                break;
+            case "es":
+                lang = "es"
+                break;
+            case "in":
+                lang = "in"
+                break;
+            default:
+                lang = "com"
+        }
+    }else{
+        lang = settings.get('language')
     }
     webview.setAttribute('src', `https://music.amazon.${lang}/home?output=embed`);
 
@@ -77,7 +83,10 @@ end = () => {
  */
 ready = () => {
     //DEBUG!!!!!!!
-    // webview.openDevTools()
+    if (isDev) {
+        webview.openDevTools()
+    }
+
 }
 
 /**

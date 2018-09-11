@@ -4,14 +4,20 @@ const path = require('path')
 const url = require('url')
 const request = require('request')
 const isDev = require('electron-is-dev');
+const settings = require('electron-settings');
 
 const { APP_NAME } = require('./const.js')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, tray, imageLocation
+let mainWindow, tray, imageLocation, settingsWindow
 
 function createWindow() {
+  if(!settings.has('autoLanguage')){
+    settings.set('autoLanguage', true)
+    settings.set('language', 'com')
+    console.log('init set settings.');
+  }
   if (isDev) {
     imageLocation = 'assets/favicon.png'
   } else {
@@ -35,7 +41,9 @@ function createWindow() {
   }))
 
   // Open the DevTools.       DEBUG!!!!!!
-  // mainWindow.webContents.openDevTools()
+  if (isDev) {
+    mainWindow.webContents.openDevTools()
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -50,7 +58,28 @@ function createWindow() {
     { label: '⏭️ next track', type: 'normal', click: nextTrack },
     { label: '⏯️ play/pause', type: 'normal', click: playAndPause },
     { label: '⏮️ previous track', type: 'normal', click: previousTrack },
-    { label: '⏹️ Quit', click: () => { app.isQuitting = true; app.quit(); } }
+    { label: '⏹️ Quit', click: () => { app.isQuitting = true; app.quit(); } },
+    {
+      label: '⚙️ Options', click: () => {
+        settingsWindow = new BrowserWindow({
+          title: APP_NAME,
+          name: APP_NAME,
+          width: 500,
+          height: 800,
+          icon: path.join(__dirname, imageLocation),
+        });
+        settingsWindow.setMenu(null);
+
+        settingsWindow.loadURL(url.format({
+          pathname: path.join(__dirname, 'settings/index.html'),
+          protocol: 'file:',
+          slashes: true
+        }))
+        if (isDev) {
+          settingsWindow.webContents.openDevTools()
+        }
+      }
+    }
   ])
   tray.setToolTip('Amazon Music')
   tray.setContextMenu(contextMenu)
