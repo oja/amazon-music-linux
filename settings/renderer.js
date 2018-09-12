@@ -5,6 +5,8 @@
  * @modify date 2018-09-11 09:19:46
  * @desc the index.html's renderer
 */
+"use strict";
+
 const settings = require('electron-settings');
 
 let regionByOSCheckbox, regionDropdown, regionByOS, setRegion, dropdownMenuButton, lyricsCheck
@@ -39,7 +41,7 @@ onload = () => {
     lyricsCheckboxChanged();
 }
 
-regionCheckboxChanged = () => {
+let regionCheckboxChanged = () => {
     if (regionByOSCheckbox.checked) {
         settings.set('language', undefined)
         settings.set('autoLanguage', true)
@@ -50,7 +52,7 @@ regionCheckboxChanged = () => {
     }
 }
 
-lyricsCheckboxChanged = () => {
+let lyricsCheckboxChanged = () => {
     if (lyricsCheck.checked) {
         settings.set('lyrics', true)
     } else {
@@ -58,7 +60,7 @@ lyricsCheckboxChanged = () => {
     }
 }
 
-langChanged = (lang) => {
+let langChanged = (lang) => {
     settings.set('language', lang)
     dropdownMenuButton.innerText = lang
 }

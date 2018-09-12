@@ -5,7 +5,9 @@
  * @modify date 2018-09-01 06:15:10
  * @desc file to be injected into amazon music
 */
-__am = {
+"use strict";
+
+let __am = {
     getMusicTitle: function () {
         return document.getElementsByClassName('trackTitle')[0].children[0].children[0].innerHTML
     }, getArtist: function () {
@@ -27,7 +29,7 @@ __am = {
             __am.getLines();
             __am.lyricsInterval = setInterval(__am.getLines, 600)
         }, 300)
-    }, getLines: function (callback) {
+    }, getLines: function () {
         try {
             const lines = document.getElementsByClassName('nowPlayingLyricsContainer')[0].children[0].children;
             if (lines != undefined) {
@@ -73,6 +75,32 @@ __am = {
         } else {
             __am.ipcRenderer.send('lyrics', text)
         }
+    }, onPlayClick: function () {
+        setTimeout(() => {
+            document.getElementsByClassName('playbackControls')[0].children[1].onclick = () => {
+                if(document.getElementsByClassName('playbackControls')[0].children[1].classList.contains('playerIconPlay')){
+                    __am.ipcRenderer.send('resumed')
+                    __am.onPlayClick();
+                }else{
+                    __am.ipcRenderer.send('paused')
+                    __am.onPlayClick();
+                }
+            }
+        }, 300)
+    }, onNextClick: function () {
+        setTimeout(() => {
+            document.getElementsByClassName('playbackControls')[0].children[2].onclick = () => {
+                __am.ipcRenderer.send('nextClicked')
+                __am.onNextClick();
+            }
+        }, 300)
+    }, onPreviousClick: function () {
+        setTimeout(() => {
+            document.getElementsByClassName('playbackControls')[0].children[0].onclick = () => {
+                __am.ipcRenderer.send('previousClicked')
+                __am.onPreviousClick();
+            }
+        }, 300)
     }, highlighted: undefined
     , lyricsInterval: undefined
     , ipcRenderer: require('electron').ipcRenderer

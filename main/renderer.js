@@ -5,6 +5,8 @@
  * @modify date 2018-09-11 09:19:51
  * @desc the index.html's renderer
 */
+"use strict";
+
 const { ipcRenderer, remote } = require('electron');
 const { getTitle } = remote.require('./main');
 const { APP_NAME } = require('../const');
@@ -61,7 +63,7 @@ onload = () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-start = () => {
+let start = () => {
     showOutput();
     output.innerHTML = blueLoop;
 }
@@ -71,7 +73,7 @@ start = () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-end = () => {
+let end = () => {
     output.innerHTML = ''
     closeOutput();
 }
@@ -81,7 +83,7 @@ end = () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-ready = () => {
+let ready = () => {
     //DEBUG!!!!!!!
     if (isDev) {
         webview.openDevTools()
@@ -94,7 +96,10 @@ ready = () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-musicStarted = () => {
+let musicStarted = () => {
+    webview.executeJavaScript("__am.onPlayClick();")
+    webview.executeJavaScript("__am.onNextClick();")
+    webview.executeJavaScript("__am.onPreviousClick();")
     webview.executeJavaScript("__am.getTitle();", false, (title) => {
         if (getTitle() != `${APP_NAME}\t${title}`) {
             ipcRenderer.send('appendTitle', title)
@@ -105,15 +110,7 @@ musicStarted = () => {
     webview.executeJavaScript('__am.getSongImage();', false, (image) => {
         ipcRenderer.send('setTrayImage', image)
     })
-    if (settings.get('lyrics')) {
-        webview.executeJavaScript("__am.hasSongText();", false, (textAv) => {
-            webview.executeJavaScript("__am.clearInterval();", false, () => {
-                if (textAv) {
-                    webview.executeJavaScript("__am.getCurrentSongText();")
-                }
-            })
-        })
-    }
+    handleLyrics();
 }
 
 /**
@@ -121,8 +118,8 @@ musicStarted = () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-musicPaused = () => {
-    //webview.executeJavaScript("__am.clearInterval();")
+let musicPaused = () => {
+    webview.executeJavaScript("__am.clearInterval();")
     ipcRenderer.send('appendTitle', '')
     closeOutput();
 }
@@ -132,11 +129,11 @@ musicPaused = () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-log = (event) => {
+let log = (event) => {
     console.log('guest: ' + event.message);
 }
 
-showOutput = () => {
+let showOutput = () => {
     if (expanded) {
         outputWrapper.style.visibility = 'visible'
         webview.style.height = '97%'
@@ -144,12 +141,33 @@ showOutput = () => {
     }
 }
 
-closeOutput = () => {
+let closeOutput = () => {
     if (!expanded) {
         outputWrapper.style.visibility = 'hidden'
         webview.style.height = '100%'
         expanded = true
     }
+}
+
+let handleLyrics = () => {
+    if (settings.get('lyrics')) {
+        webview.executeJavaScript("__am.hasSongText();", false, (textAv) => {
+            webview.executeJavaScript("__am.clearInterval();", false, () => {
+                if (textAv) {
+                    showOutput();
+                    webview.executeJavaScript("__am.getCurrentSongText();")
+                }
+            })
+        })
+    }
+}
+
+let clearLyricsAndRestart = () => {
+    webview.executeJavaScript("__am.clearInterval();")
+    closeOutput();
+    setTimeout(() => {
+        handleLyrics();
+    }, 300)
 }
 
 /**
@@ -168,7 +186,7 @@ ipcRenderer.on('playAndPause', () => {
  */
 ipcRenderer.on('nextTrack', () => {
     webview.executeJavaScript("__am.nextTrack();", false, () => {
-        musicStarted();
+        clearLyricsAndRestart();
     })
 });
 
@@ -179,7 +197,7 @@ ipcRenderer.on('nextTrack', () => {
  */
 ipcRenderer.on('previousTrack', () => {
     webview.executeJavaScript("__am.previousTrack();", false, () => {
-        musicStarted();
+        clearLyricsAndRestart();
     })
 });
 
@@ -189,6 +207,43 @@ ipcRenderer.on('previousTrack', () => {
  * @author Flo Dörr <flo@dörr.site>
  */
 ipcRenderer.on('lyrics', (event, text) => {
-    showOutput();
     output.innerHTML = `${text}`
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcRenderer.on('resumed', () => {
+    handleLyrics();
+    console.log('resumed!!');
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcRenderer.on('paused', () => {
+    /*webview.executeJavaScript("__am.clearInterval();")
+    closeOutput();*/
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcRenderer.on('nextClicked', () => {
+    clearLyricsAndRestart();
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcRenderer.on('previousClicked', () => {
+    clearLyricsAndRestart();
 });

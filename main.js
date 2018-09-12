@@ -1,3 +1,5 @@
+"use strict";
+
 const { BrowserWindow, ipcMain, app, globalShortcut, Tray, Menu, nativeImage } = require('electron')
 
 const path = require('path')
@@ -249,6 +251,42 @@ exports.getTitle = function getTitle() {
  */
 ipcMain.on('lyrics', (event, arg) => {
   mainWindow.webContents.send('lyrics', arg)
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcMain.on('resumed', () => {
+  mainWindow.webContents.send('resumed')
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcMain.on('paused', () => {
+  mainWindow.webContents.send('paused')
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcMain.on('nextClicked', () => {
+  mainWindow.webContents.send('nextClicked')
+});
+
+/**
+ * handles the lyrics
+ * 
+ * @author Flo Dörr <flo@dörr.site>
+ */
+ipcMain.on('previousClicked', () => {
+  mainWindow.webContents.send('previousClicked')
 });
 
 // In this file you can include the rest of your app's specific main process
