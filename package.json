@@ -5,7 +5,11 @@
   "main": "./main.js",
   "description": "unofficial amazon music player for linux",
   "scripts": {
-    "start": "electron .",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "start": "npm run build && npm run html && electron ./dist/main.js",
+    "html": "copyfiles src/**/*.html src/**/*.css dist/",
     "package-linux": "electron-packager .  amazon-music-linux --overwrite --asar --platform=linux --arch=x64 --icon=assets/favicon.png --extra-resource=assets/favicon.png --prune=true --out=release-builds"
   },
   "repository": {
@@ -23,6 +27,9 @@
   },
   "homepage": "https://github.com/oja/amazon-music-linux#readme",
   "dependencies": {
+    "@types/electron-is-dev": "^0.3.0",
+    "@types/electron-settings": "^3.1.1",
+    "@types/request": "^2.47.1",
     "electron-is-dev": "^0.3.0",
     "electron-settings": "^3.2.0",
     "path": "^0.12.7",
@@ -30,7 +37,10 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "electron": "^2.0.8",
-    "electron-packager": "^12.1.1"
+    "copyfiles": "^2.1.0",
+    "electron": "2.0.9",
+    "electron-packager": "^12.1.1",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
   }
 }

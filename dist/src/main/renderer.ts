@@ -1,3 +1,8 @@
+import { WebviewTag } from "electron";
+import * as settings from 'electron-settings'
+import * as isDev from 'electron-is-dev'
+import APP_NAME from '../const';
+
 /**
  * @author Flo Dörr
  * @email flo@dörr.site
@@ -9,15 +14,12 @@
 
 const { ipcRenderer, remote } = require('electron');
 const { getTitle } = remote.require('./main');
-const { APP_NAME } = require('../const');
-const isDev = require('electron-is-dev');
-const settings = require('electron-settings');
 
-let output, outputWrapper, webview;
+let output: HTMLElement, outputWrapper: HTMLElement, webview: WebviewTag;
 let expanded = true;
 let blueLoop = '<img src="https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif" />'
 onload = () => {
-    webview = document.getElementById('amazon-music-webview');
+    webview = document.getElementById('amazon-music-webview') as WebviewTag;
     output = document.getElementById('output');
     outputWrapper = document.getElementById('output-wrapper');
     let lang;
@@ -54,7 +56,7 @@ onload = () => {
     webview.addEventListener('dom-ready', ready)
     webview.addEventListener('media-started-playing', musicStarted)
     webview.addEventListener('media-paused', musicPaused)
-    webview.addEventListener('console-message', log(event))
+    webview.addEventListener('console-message', (event) => log(event))
 }
 
 
@@ -129,8 +131,8 @@ let musicPaused = () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-let log = (event) => {
-    console.log('guest: ' + event.message);
+let log = (event: Event) => {
+    console.log('guest: ' + event);
 }
 
 let showOutput = () => {
@@ -206,7 +208,7 @@ ipcRenderer.on('previousTrack', () => {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('lyrics', (event, text) => {
+ipcRenderer.on('lyrics', (event: any, text: String) => {
     output.innerHTML = `${text}`
 });
 

@@ -1,18 +1,16 @@
+import { BrowserWindow, Tray, NativeImage, app, ipcMain, globalShortcut, Menu, nativeImage } from "electron";
+import APP_NAME from './const';
+import * as path from 'path';
+import * as url from 'url';
+import * as request from 'request'
+import * as isDev from 'electron-is-dev'
+import * as settings from 'electron-settings'
+
 "use strict";
-
-const { BrowserWindow, ipcMain, app, globalShortcut, Tray, Menu, nativeImage } = require('electron')
-
-const path = require('path')
-const url = require('url')
-const request = require('request')
-const isDev = require('electron-is-dev');
-const settings = require('electron-settings');
-
-const { APP_NAME } = require('./const.js')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, tray, imageLocation, settingsWindow
+let mainWindow: BrowserWindow, tray: Tray, imageLocation: string, settingsWindow: BrowserWindow
 
 let shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   if (mainWindow) {
@@ -22,7 +20,6 @@ let shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
 
 if (shouldQuit) {
   app.quit()
-  return
 }
 
 function createWindow() {
@@ -43,7 +40,6 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: APP_NAME,
-    name: APP_NAME,
     width: 1200,
     height: 800,
     icon: path.join(__dirname, imageLocation),
@@ -70,18 +66,17 @@ function createWindow() {
     mainWindow = null
   })
 
-  tray = new Tray(imageLocation)
+  tray = new Tray(nativeImage.createFromPath(imageLocation))
   const contextMenu = Menu.buildFromTemplate([
     { label: '🎵 Toggle App', click: () => { mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show() } },
     { label: '⏭️ Next Track', type: 'normal', click: nextTrack },
     { label: '⏯️ Play/Pause', type: 'normal', click: playAndPause },
     { label: '⏮️ Previous Track', type: 'normal', click: previousTrack },
-    { label: '⏹️ Quit', click: () => { app.isQuitting = true; app.quit(); } },
+    { label: '⏹️ Quit', click: () => { app.quit(); } },
     {
       label: '⚙️ Options', click: () => {
         settingsWindow = new BrowserWindow({
           title: APP_NAME,
-          name: APP_NAME,
           width: 500,
           height: 800,
           icon: path.join(__dirname, imageLocation),
@@ -106,17 +101,14 @@ function createWindow() {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
   })
 
-  mainWindow.on('minimize', function (event) {
+  mainWindow.on('minimize', function (event: Event) {
     event.preventDefault();
     mainWindow.hide();
   });
 
-  mainWindow.on('close', (event) => {
-    if (!app.isQuitting) {
-      event.preventDefault();
-      mainWindow.hide();
-    }
-
+  mainWindow.on('close', (event: Event) => {
+    event.preventDefault();
+    mainWindow.hide();
     return false;
   })
 }
@@ -148,7 +140,7 @@ app.on('activate', function () {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcMain.on('appendTitle', function (event, arg) {
+ipcMain.on('appendTitle', function (event: Event, arg: string) {
   mainWindow.setTitle(`${APP_NAME}\t${arg}`);
 })
 
@@ -158,15 +150,15 @@ ipcMain.on('appendTitle', function (event, arg) {
  * @author Flo Dörr <flo@dörr.site>
  */
 
-var options = {
+var options: any = {
   url,
   method: 'get',
   encoding: null
 }
 
-ipcMain.on('setTrayImage', function (event, arg) {
+ipcMain.on('setTrayImage', function (event: Event, arg: any) {
   options.url = arg
-  request(options, (err, resp, body) => {
+  request(options, (err: Error, resp: any, body: Buffer) => {
     if (!err) {
       tray.setImage(nativeImage.createFromBuffer(body));
     } else {
@@ -249,7 +241,7 @@ exports.getTitle = function getTitle() {
  * 
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcMain.on('lyrics', (event, arg) => {
+ipcMain.on('lyrics', (event: Event, arg: string) => {
   mainWindow.webContents.send('lyrics', arg)
 });
 

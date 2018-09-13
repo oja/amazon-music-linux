@@ -1,10 +1,3 @@
-[![GitHub version](https://img.shields.io/github/tag/oja/amazon-music-linux.svg)](https://github.com/oja/amazon-music-linux/releases)
-[![GitHub license](https://img.shields.io/github/license/oja/amazon-music-linux.svg)](https://github.com/oja/amazon-music-linux/blob/master/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/oja/amazon-music-linux.svg)](https://github.com/oja/amazon-music-linux/issues)
-[![GitHub stars](https://img.shields.io/github/stars/oja/amazon-music-linux.svg)](https://github.com/oja/amazon-music-linux/stargazers)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/oja/amazon-music-linux/)
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](https://github.com/oja/amazon-music-linux/)
-[![Gluten Free](https://img.shields.io/badge/Gluten-free-green.svg)](https://github.com/oja/amazon-music-linux/)
 # amazon-music-linux
 A standalone app for Amazon Prime Music/Amazon Music Unlimited.
 

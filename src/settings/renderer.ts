@@ -5,25 +5,23 @@
  * @modify date 2018-09-11 09:19:46
  * @desc the index.html's renderer
 */
-"use strict";
+import * as settings from 'electron-settings'
 
-const settings = require('electron-settings');
-
-let regionByOSCheckbox, regionDropdown, regionByOS, setRegion, dropdownMenuButton, lyricsCheck
+let regionByOSCheckbox: HTMLInputElement, regionDropdown: HTMLInputElement, regionByOS: HTMLElement, setRegion: HTMLElement, dropdownMenuButton: HTMLElement, lyricsCheck: HTMLInputElement;
 
 onload = () => {
     regionByOS = document.getElementById('region-by-os')
-    regionByOSCheckbox = regionByOS.children[0].children[1].children[0]
+    regionByOSCheckbox = regionByOS.children[0].children[1].children[0] as HTMLInputElement
     setRegion = document.getElementById('select-region')
-    regionDropdown = setRegion.children[0].children[1].children[0].children[0]
+    regionDropdown = setRegion.children[0].children[1].children[0].children[0] as HTMLInputElement
     dropdownMenuButton = document.getElementById('dropdownMenuButton')
-    lyricsCheck = document.getElementById('lyrics-check')
+    lyricsCheck = document.getElementById('lyrics-check') as HTMLInputElement
 
-    regionByOSCheckbox.checked = settings.get('autoLanguage')
-    lyricsCheck.checked = settings.get('lyrics')
+    regionByOSCheckbox.checked = settings.get('autoLanguage') as boolean
+    lyricsCheck.checked = settings.get('lyrics') as boolean
 
     if (settings.has('language')) {
-        dropdownMenuButton.innerText = settings.get('language')
+        dropdownMenuButton.innerText = settings.get('language') as string
     }
 
     document.getElementById('en').addEventListener('click', () => { langChanged('com') })
@@ -60,7 +58,7 @@ let lyricsCheckboxChanged = () => {
     }
 }
 
-let langChanged = (lang) => {
+let langChanged = (lang: string) => {
     settings.set('language', lang)
     dropdownMenuButton.innerText = lang
 }

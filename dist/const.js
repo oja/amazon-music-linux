@@ -1,3 +1,5 @@
+"use strict";
+exports.__esModule = true;
 /**
  * @author Flo Dörr
  * @email flo@dörr.site
@@ -5,4 +7,5 @@
  * @modify date 2018-08-26 03:26:37
  * @desc this projects constants
 */
-exports.APP_NAME = 'Amazon Music'
+exports["default"] = 'Amazon Music';
+//# sourceMappingURL=const.js.map
