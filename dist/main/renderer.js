@@ -8,20 +8,20 @@ var const_1 = require("../const");
  * @email flo@dörr.site
  * @create date 2018-08-26 02:38:43
  * @modify date 2018-09-11 09:19:51
- * @desc the index.html's renderer
+ * @desc the index.html"s renderer
 */
-var _a = require('electron'), ipcRenderer = _a.ipcRenderer, remote = _a.remote;
-var getTitle = remote.require('./main').getTitle;
+var _a = require("electron"), ipcRenderer = _a.ipcRenderer, remote = _a.remote;
+var getTitle = remote.require("./main").getTitle;
 var output, outputWrapper, webview;
 var expanded = true;
-var blueLoop = '<img src="https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif" />';
+var blueLoop = "<img src='https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif' />";
 onload = function () {
-    webview = document.getElementById('amazon-music-webview');
-    output = document.getElementById('output');
-    outputWrapper = document.getElementById('output-wrapper');
+    webview = document.getElementById("amazon-music-webview");
+    output = document.getElementById("output");
+    outputWrapper = document.getElementById("output-wrapper");
     var lang;
-    if (settings.get('autoLanguage')) {
-        switch (navigator.language.split('-')[0]) {
+    if (settings.get("autoLanguage")) {
+        switch (navigator.language.split("-")[0]) {
             case "en":
                 lang = "com";
                 break;
@@ -45,15 +45,15 @@ onload = function () {
         }
     }
     else {
-        lang = settings.get('language');
+        lang = settings.get("language");
     }
-    webview.setAttribute('src', "https://music.amazon." + lang + "/home?output=embed");
-    webview.addEventListener('did-start-loading', start);
-    webview.addEventListener('did-stop-loading', end);
-    webview.addEventListener('dom-ready', ready);
-    webview.addEventListener('media-started-playing', musicStarted);
-    webview.addEventListener('media-paused', musicPaused);
-    webview.addEventListener('console-message', function (event) { return log(event); });
+    webview.setAttribute("src", "https://music.amazon." + lang + "/home?output=embed");
+    webview.addEventListener("did-start-loading", start);
+    webview.addEventListener("did-stop-loading", end);
+    webview.addEventListener("dom-ready", ready);
+    webview.addEventListener("media-started-playing", musicStarted);
+    webview.addEventListener("media-paused", musicPaused);
+    webview.addEventListener("console-message", function (event) { return log(event); });
 };
 /**
  * loading start listener
@@ -70,7 +70,7 @@ var start = function () {
  * @author Flo Dörr <flo@dörr.site>
  */
 var end = function () {
-    output.innerHTML = '';
+    output.innerHTML = "";
     closeOutput();
 };
 /**
@@ -90,19 +90,19 @@ var ready = function () {
  * @author Flo Dörr <flo@dörr.site>
  */
 var musicStarted = function () {
-    webview.executeJavaScript("__am.onPlayClick();");
-    webview.executeJavaScript("__am.onNextClick();");
-    webview.executeJavaScript("__am.onPreviousClick();");
-    webview.executeJavaScript("__am.getTitle();", false, function (title) {
+    webview.executeJavaScript("am.onPlayClick();");
+    webview.executeJavaScript("am.onNextClick();");
+    webview.executeJavaScript("am.onPreviousClick();");
+    webview.executeJavaScript("am.getTitle();", false, function (title) {
         if (getTitle() != const_1["default"] + "\t" + title) {
-            ipcRenderer.send('appendTitle', title);
+            ipcRenderer.send("appendTitle", title);
         }
         else {
             setTimeout(musicStarted, 500);
         }
     });
-    webview.executeJavaScript('__am.getSongImage();', false, function (image) {
-        ipcRenderer.send('setTrayImage', image);
+    webview.executeJavaScript("am.getSongImage();", false, function (image) {
+        ipcRenderer.send("setTrayImage", image);
     });
     handleLyrics();
 };
@@ -112,8 +112,8 @@ var musicStarted = function () {
  * @author Flo Dörr <flo@dörr.site>
  */
 var musicPaused = function () {
-    webview.executeJavaScript("__am.clearInterval();");
-    ipcRenderer.send('appendTitle', '');
+    webview.executeJavaScript("am.clearInterval();");
+    ipcRenderer.send("appendTitle", "");
     closeOutput();
 };
 /**
@@ -122,66 +122,66 @@ var musicPaused = function () {
  * @author Flo Dörr <flo@dörr.site>
  */
 var log = function (event) {
-    console.log('guest: ' + event);
+    console.log("guest: " + event);
 };
 var showOutput = function () {
     if (expanded) {
-        outputWrapper.style.visibility = 'visible';
-        webview.style.height = '97%';
+        outputWrapper.style.visibility = "visible";
+        webview.style.height = "97%";
         expanded = false;
     }
 };
 var closeOutput = function () {
     if (!expanded) {
-        outputWrapper.style.visibility = 'hidden';
-        webview.style.height = '100%';
+        outputWrapper.style.visibility = "hidden";
+        webview.style.height = "100%";
         expanded = true;
     }
 };
 var handleLyrics = function () {
-    if (settings.get('lyrics')) {
-        webview.executeJavaScript("__am.hasSongText();", false, function (textAv) {
-            webview.executeJavaScript("__am.clearInterval();", false, function () {
+    if (settings.get("lyrics")) {
+        webview.executeJavaScript("am.hasSongText();", false, function (textAv) {
+            webview.executeJavaScript("am.clearInterval();", false, function () {
                 if (textAv) {
                     showOutput();
-                    webview.executeJavaScript("__am.getCurrentSongText();");
+                    webview.executeJavaScript("am.getCurrentSongText();");
                 }
             });
         });
     }
 };
 var clearLyricsAndRestart = function () {
-    webview.executeJavaScript("__am.clearInterval();");
+    webview.executeJavaScript("am.clearInterval();");
     closeOutput();
     setTimeout(function () {
         handleLyrics();
     }, 300);
 };
 /**
- * handels the 'play and pause' key
+ * handels the "play and pause" key
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('playAndPause', function () {
-    webview.executeJavaScript("__am.playAndPauseMusic();");
+ipcRenderer.on("playAndPause", function () {
+    webview.executeJavaScript("am.playAndPauseMusic();");
 });
 /**
- * handels 'the next track' key
+ * handels "the next track" key
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('nextTrack', function () {
-    webview.executeJavaScript("__am.nextTrack();", false, function () {
+ipcRenderer.on("nextTrack", function () {
+    webview.executeJavaScript("am.nextTrack();", false, function () {
         clearLyricsAndRestart();
     });
 });
 /**
- * handels 'the previous track' key
+ * handels "the previous track" key
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('previousTrack', function () {
-    webview.executeJavaScript("__am.previousTrack();", false, function () {
+ipcRenderer.on("previousTrack", function () {
+    webview.executeJavaScript("am.previousTrack();", false, function () {
         clearLyricsAndRestart();
     });
 });
@@ -190,7 +190,7 @@ ipcRenderer.on('previousTrack', function () {
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('lyrics', function (event, text) {
+ipcRenderer.on("lyrics", function (event, text) {
     output.innerHTML = "" + text;
 });
 /**
@@ -198,17 +198,17 @@ ipcRenderer.on('lyrics', function (event, text) {
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('resumed', function () {
+ipcRenderer.on("resumed", function () {
     handleLyrics();
-    console.log('resumed!!');
+    console.log("resumed!!");
 });
 /**
  * handles the lyrics
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('paused', function () {
-    /*webview.executeJavaScript("__am.clearInterval();")
+ipcRenderer.on("paused", function () {
+    /*webview.executeJavaScript("am.clearInterval();")
     closeOutput();*/
 });
 /**
@@ -216,7 +216,7 @@ ipcRenderer.on('paused', function () {
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('nextClicked', function () {
+ipcRenderer.on("nextClicked", function () {
     clearLyricsAndRestart();
 });
 /**
@@ -224,7 +224,7 @@ ipcRenderer.on('nextClicked', function () {
  *
  * @author Flo Dörr <flo@dörr.site>
  */
-ipcRenderer.on('previousClicked', function () {
+ipcRenderer.on("previousClicked", function () {
     clearLyricsAndRestart();
 });
 //# sourceMappingURL=renderer.js.map
