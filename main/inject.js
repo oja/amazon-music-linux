@@ -5,9 +5,8 @@
  * @modify date 2018-09-01 06:15:10
  * @desc file to be injected into amazon music
 */
-"use strict";
 
-let __am = {
+__am = {
     getMusicTitle: function () {
         return document.getElementsByClassName('trackTitle')[0].children[0].children[0].innerHTML
     }, getArtist: function () {
