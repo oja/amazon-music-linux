@@ -61,6 +61,7 @@ onload = function () {
  * @author Flo Dörr <flo@dörr.site>
  */
 var start = function () {
+    console.log(__dirname);
     showOutput();
     output.innerHTML = blueLoop;
 };

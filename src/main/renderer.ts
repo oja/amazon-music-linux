@@ -65,6 +65,8 @@ onload = () => {
  * @author Flo Dörr <flo@dörr.site>
  */
 const start = () => {
+    console.log(__dirname);
+    
     showOutput();
     output.innerHTML = blueLoop;
 };
