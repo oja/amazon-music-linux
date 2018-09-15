@@ -236,7 +236,7 @@ app.on("ready", () => {
 });
 
 /**
- * handels the "play and pause" key
+ * handles the "play and pause" key
  *
  * @author Flo Dörr <flo@dörr.site>
  */
@@ -245,7 +245,7 @@ function playAndPause() {
 }
 
 /**
- * handels "the next track" key
+ * handles "the next track" key
  *
  * @author Flo Dörr <flo@dörr.site>
  */
@@ -254,7 +254,7 @@ function nextTrack() {
 }
 
 /**
- * handels "the previous track" key
+ * handles "the previous track" key
  *
  * @author Flo Dörr <flo@dörr.site>
  */
@@ -263,7 +263,7 @@ function previousTrack() {
 }
 
 /**
- * handels "the previous track" key
+ * handles "the previous track" key
  *
  * @returns the current app title
  * @author Flo Dörr <flo@dörr.site>
