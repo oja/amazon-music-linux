@@ -12,7 +12,7 @@ import * as settings from "electron-settings";
 import * as path from "path";
 import * as request from "request";
 import * as url from "url";
-import APP_NAME from "./const";
+import * as constants from "./const";
 
 // Keep a global reference of the window object, if you don"t, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -53,7 +53,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     height: 800,
     icon: path.join(__dirname, imageLocation),
-    title: APP_NAME,
+    title: constants.APP_NAME,
     webPreferences: { contextIsolation: false },
     width: 1200,
   });
@@ -103,7 +103,7 @@ function createWindow() {
         settingsWindow = new BrowserWindow({
           height: 800,
           icon: path.join(__dirname, imageLocation),
-          title: APP_NAME,
+          title: constants.APP_NAME,
           width: 500,
         });
         settingsWindow.setMenu(null);
@@ -169,7 +169,7 @@ app.on("activate", () => {
  * @author Flo Dörr <flo@dörr.site>
  */
 ipcMain.on("appendTitle", (event: Event, arg: string) => {
-  mainWindow.setTitle(`${APP_NAME}\t${arg}`);
+  mainWindow.setTitle(`${constants.APP_NAME}\t${arg}`);
 });
 
 /**

@@ -5,4 +5,4 @@
  * @modify date 2018-08-26 03:26:37
  * @desc this projects constants
  */
-export const APP_NAME = "Amazon Music";
+export const APP_NAME: string = "Amazon Music";
