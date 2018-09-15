@@ -9,8 +9,8 @@
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "npm run build && npm run html && electron ./dist/main.js",
-    "html": "copyfiles src/**/*.html src/**/*.css dist/",
-    "package-linux": "electron-packager .  amazon-music-linux --overwrite --asar --platform=linux --arch=x64 --icon=assets/favicon.png --extra-resource=assets/favicon.png --prune=true --out=release-builds"
+    "html": "copyfiles **/*.html ./dist",
+    "package-linux": "npm run build && npm run html && copyfiles *.json ./dist && copyfiles **/*.png ./dist && cd dist && npm install && electron-packager . amazon-music-linux --overwrite --asar --platform=linux --arch=x64 --icon=../assets/favicon.png --extra-resource=../assets/favicon.png --prune=true --out=../release-builds"
   },
   "repository": {
     "type": "git",

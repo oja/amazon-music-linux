@@ -6,6 +6,6 @@ exports.__esModule = true;
  * @create date 2018-08-26 02:37:53
  * @modify date 2018-08-26 03:26:37
  * @desc this projects constants
-*/
-exports["default"] = 'Amazon Music';
+ */
+exports["default"] = "Amazon Music";
 //# sourceMappingURL=const.js.map
