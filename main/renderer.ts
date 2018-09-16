@@ -1,7 +1,7 @@
 import { ipcRenderer, remote, WebviewTag } from "electron";
 import * as isDev from "electron-is-dev";
 import * as settings from "electron-settings";
-import APP_NAME from "../const";
+import * as constants from "../const";
 
 /**
  * @author Flo Dörr
@@ -101,7 +101,7 @@ const musicStarted = () => {
   webview.executeJavaScript("__am.onNextClick();");
   webview.executeJavaScript("__am.onPreviousClick();");
   webview.executeJavaScript("__am.getTitle();", false, (title) => {
-    if (getTitle() !== `${APP_NAME}\t${title}`) {
+    if (getTitle() !== `${constants.APP_NAME}\t${title}`) {
       ipcRenderer.send("appendTitle", title);
     } else {
       setTimeout(musicStarted, 500);

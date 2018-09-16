@@ -9,6 +9,7 @@ import {
 } from "electron";
 import * as isDev from "electron-is-dev";
 import * as settings from "electron-settings";
+import { startServer } from "./app-server";
 import * as path from "path";
 import * as request from "request";
 import * as url from "url";
@@ -20,6 +21,14 @@ let mainWindow: BrowserWindow;
 let tray: Tray;
 let imageLocation: string;
 let settingsWindow: BrowserWindow;
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on("ready", () => {
+  createWindow();
+  startServer();
+});
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   if (mainWindow) {
@@ -140,11 +149,6 @@ function createWindow() {
     return false;
   });
 }
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
