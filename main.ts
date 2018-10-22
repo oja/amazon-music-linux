@@ -5,15 +5,15 @@ import {
   ipcMain,
   Menu,
   nativeImage,
-  Tray,
+  Tray
 } from "electron";
 import * as isDev from "electron-is-dev";
 import * as settings from "electron-settings";
-import { startServer } from "./app-server";
 import * as path from "path";
 import * as request from "request";
 import * as url from "url";
 import * as constants from "./const";
+import { Connection } from "./app-server";
 
 // Keep a global reference of the window object, if you don"t, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -21,13 +21,13 @@ let mainWindow: BrowserWindow;
 let tray: Tray;
 let imageLocation: string;
 let settingsWindow: BrowserWindow;
+let connection: Connection;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
   createWindow();
-  startServer();
 });
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
@@ -64,7 +64,7 @@ function createWindow() {
     icon: path.join(__dirname, imageLocation),
     title: constants.APP_NAME,
     webPreferences: { contextIsolation: false },
-    width: 1200,
+    width: 1200
   });
   mainWindow.setMenu(null);
 
@@ -73,8 +73,8 @@ function createWindow() {
     url.format({
       pathname: path.join(__dirname, "main/index.html"),
       protocol: "file:",
-      slashes: true,
-    }),
+      slashes: true
+    })
   );
 
   // Open the DevTools.       DEBUG!!!!!!
@@ -96,16 +96,18 @@ function createWindow() {
       click: () => {
         mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
       },
-      label: "🎵 Toggle App",
+      label: "🎵 Toggle App"
     },
     { label: "⏭️ Next Track", type: "normal", click: nextTrack },
     { label: "⏯️ Play/Pause", type: "normal", click: playAndPause },
     { label: "⏮️ Previous Track", type: "normal", click: previousTrack },
     {
       click: () => {
+        mainWindow.removeAllListeners("close");
+        mainWindow.close();
         app.quit();
       },
-      label: "⏹️ Quit",
+      label: "⏹️ Quit"
     },
     {
       click: () => {
@@ -113,7 +115,7 @@ function createWindow() {
           height: 800,
           icon: path.join(__dirname, imageLocation),
           title: constants.APP_NAME,
-          width: 500,
+          width: 500
         });
         settingsWindow.setMenu(null);
 
@@ -121,15 +123,15 @@ function createWindow() {
           url.format({
             pathname: path.join(__dirname, "settings/index.html"),
             protocol: "file:",
-            slashes: true,
-          }),
+            slashes: true
+          })
         );
         if (isDev) {
           settingsWindow.webContents.openDevTools();
         }
       },
-      label: "⚙️ Options",
-    },
+      label: "⚙️ Options"
+    }
   ]);
   tray.setToolTip("Amazon Music");
   tray.setContextMenu(contextMenu);
@@ -147,6 +149,22 @@ function createWindow() {
     event.preventDefault();
     mainWindow.hide();
     return false;
+  });
+  connection = new Connection();
+  connection.startServer(() => {
+    connection.setListener(connection.socket, (message: string) => {
+      switch (message) {
+        case "playAndPause":
+          mainWindow.webContents.send("playAndPause");
+          break;
+        case "nextTrack":
+          mainWindow.webContents.send("nextTrack");
+          break;
+        case "previousTrack":
+          mainWindow.webContents.send("previousTrack");
+          break;
+      }
+    });
   });
 }
 
@@ -173,7 +191,12 @@ app.on("activate", () => {
  * @author Flo Dörr <flo@dörr.site>
  */
 ipcMain.on("appendTitle", (event: Event, arg: string) => {
+  connection.setTrack(arg);
   mainWindow.setTitle(`${constants.APP_NAME}\t${arg}`);
+});
+
+ipcMain.on("setTrackAndArtist", (event: Event, arg: String[]) => {
+  connection.setTrackAndArtist(arg[0], arg[1]);
 });
 
 /**
@@ -185,7 +208,7 @@ ipcMain.on("appendTitle", (event: Event, arg: string) => {
 const options: any = {
   encoding: null,
   method: "get",
-  url,
+  url
 };
 
 ipcMain.on("setTrayImage", (event: Event, arg: any) => {
@@ -321,5 +344,12 @@ ipcMain.on("previousClicked", () => {
   mainWindow.webContents.send("previousClicked");
 });
 
+ipcMain.on("sendPlayingStatus", (event: Event, arg: boolean) => {
+  connection.sendPlayingStatus(arg);
+});
+
+ipcMain.on("sendTrackName", (event: Event, arg: string) => {
+  connection.setTrack(arg);
+});
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

@@ -16,6 +16,7 @@ let output: HTMLElement;
 let outputWrapper: HTMLElement;
 let webview: WebviewTag;
 let expanded = true;
+
 const blueLoop =
   "<img src='https://m.media-amazon.com/images/G/01/digital/music/player/web/dragonfly/eqSmBlueLoop.gif' />";
 onload = () => {
@@ -97,6 +98,9 @@ const ready = () => {
  * @author Flo Dörr <flo@dörr.site>
  */
 const musicStarted = () => {
+  /*webview.executeJavaScript("__am.getTracklist();", false, (tracklist) => {
+    console.log(tracklist);
+  });*/
   webview.executeJavaScript("__am.onPlayClick();");
   webview.executeJavaScript("__am.onNextClick();");
   webview.executeJavaScript("__am.onPreviousClick();");
@@ -107,10 +111,18 @@ const musicStarted = () => {
       setTimeout(musicStarted, 500);
     }
   });
+  setTimeout(() => {
+    webview.executeJavaScript("__am.getMusicTitle();", false, (track) => {
+      webview.executeJavaScript("__am.getArtist();", false, (artist) => {
+        ipcRenderer.send("setTrackAndArtist", [track, artist]);
+      });
+    });
+  }, 1000);
   webview.executeJavaScript("__am.getSongImage();", false, (image) => {
     ipcRenderer.send("setTrayImage", image);
   });
   handleLyrics();
+  ipcRenderer.send("sendPlayingStatus", false);
 };
 
 /**
@@ -122,6 +134,7 @@ const musicPaused = () => {
   webview.executeJavaScript("__am.clearInterval();");
   ipcRenderer.send("appendTitle", "");
   closeOutput();
+  ipcRenderer.send("sendPlayingStatus", true);
 };
 
 /**
