@@ -117,6 +117,29 @@ __am = {
             }
         }, 300)
     },
+    getTracklist: function() {
+        const trackList = new Array();
+        const songList = document.getElementsByClassName("listPane")[0];
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < songList.children.length; i++) {
+          const currSubList = songList.children[i];
+          // tslint:disable-next-line:prefer-for-of
+          for (let j = 0; j < currSubList.children.length; j++) {
+            const songElement = currSubList.children[j];
+            // tslint:disable-next-line:no-console
+            if(songElement.style.display !== "none"){
+                trackList.push({
+                    trackNumber: parseInt(songElement.children[2].children[0].children[0].children[0].innerHTML),
+                    trackArt: songElement.children[3].children[0].children[0].children[0].children[0].src,
+                    title: songElement.children[4].title,
+                    album: songElement.children[4].children[3].children[0].innerHTML,
+                    duration: songElement.children[5].children[0].children[0].innerHTML
+                });
+            }
+          }
+        }
+        return trackList;
+      },
     highlighted: undefined,
     lyricsInterval: undefined,
     ipcRenderer: require('electron').ipcRenderer
