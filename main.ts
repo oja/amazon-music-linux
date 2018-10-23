@@ -52,6 +52,16 @@ function createWindow() {
     // tslint:disable-next-line:no-console
     console.log("init set settings lyrics.");
   }
+  if (!settings.has("appServer")) {
+    settings.set("appServer", true);
+    // tslint:disable-next-line:no-console
+    console.log("init set settings app server.");
+  }
+  if (!settings.has("appPort")) {
+    settings.set("appPort", 3000);
+    // tslint:disable-next-line:no-console
+    console.log("init set settings app port.");
+  }
   if (isDev) {
     imageLocation = "assets/favicon.png";
   } else {

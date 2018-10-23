@@ -7,6 +7,8 @@
  */
 import * as settings from "electron-settings";
 
+let appServer: HTMLInputElement;
+let appPort: HTMLInputElement;
 let regionByOSCheckbox: HTMLInputElement;
 let regionDropdown: HTMLInputElement;
 let regionByOS: HTMLElement;
@@ -23,6 +25,8 @@ onload = () => {
     .children[0] as HTMLInputElement;
   dropdownMenuButton = document.getElementById("dropdownMenuButton");
   lyricsCheck = document.getElementById("lyrics-check") as HTMLInputElement;
+  appServer = document.getElementById("app-check") as HTMLInputElement;
+  appPort = document.getElementById("app-port") as HTMLInputElement;
 
   regionByOSCheckbox.checked = settings.get("autoLanguage") as boolean;
   lyricsCheck.checked = settings.get("lyrics") as boolean;
@@ -30,6 +34,10 @@ onload = () => {
   if (settings.has("language")) {
     dropdownMenuButton.innerText = settings.get("language") as string;
   }
+
+  appPort.value = settings.get("appPort") as string;
+  appServer.checked = settings.get("appServer") as boolean;
+  appPort.disabled = !appServer.checked;
 
   document.getElementById("en").addEventListener("click", () => {
     langChanged("com");
@@ -55,6 +63,9 @@ onload = () => {
 
   lyricsCheck.addEventListener("change", lyricsCheckboxChanged);
   lyricsCheckboxChanged();
+
+  appServer.addEventListener("change", appServerToggle);
+  appPort.addEventListener("change", portChanged);
 };
 
 const regionCheckboxChanged = () => {
@@ -79,4 +90,14 @@ const lyricsCheckboxChanged = () => {
 const langChanged = (lang: string) => {
   settings.set("language", lang);
   dropdownMenuButton.innerText = lang;
+};
+
+const portChanged = () => {
+  settings.set("appPort", +appPort.value);
+  console.log(settings.get("appPort"));
+};
+
+const appServerToggle = () => {
+  settings.set("appServer", appServer.checked);
+  appPort.disabled = !appServer.checked;
 };
