@@ -6,6 +6,8 @@ A standalone app for Amazon Prime Music/Amazon Music Unlimited.
 ### Prebuilt packages
 `.deb` and `.rpm` packages can be downloaded [from the releases page](https://github.com/oja/amazon-music-linux/releases).
 
+In order to install the companion app, download a built version from the [Play Store](https://play.google.com/store/apps/details?id=site.doerr.flo.AMcompanion) or build it by yourself by cloning [the repository](https://github.com/flokol120/amazon-music-linux-app)
+
 ### Building from source
 ```
 git clone https://github.com/oja/amazon-music-linux
