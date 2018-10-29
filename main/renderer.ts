@@ -57,7 +57,7 @@ onload = () => {
   webview.addEventListener("dom-ready", ready);
   webview.addEventListener("media-started-playing", musicStarted);
   webview.addEventListener("media-paused", musicPaused);
-  webview.addEventListener("console-message", (event) => log(event));
+  webview.addEventListener("console-message", event => log(event));
 };
 
 /**
@@ -104,25 +104,31 @@ const musicStarted = () => {
   webview.executeJavaScript("__am.onPlayClick();");
   webview.executeJavaScript("__am.onNextClick();");
   webview.executeJavaScript("__am.onPreviousClick();");
-  webview.executeJavaScript("__am.getTitle();", false, (title) => {
+  webview.executeJavaScript("__am.getTitle();", false, title => {
     if (getTitle() !== `${constants.APP_NAME}\t${title}`) {
       ipcRenderer.send("appendTitle", title);
     } else {
       setTimeout(musicStarted, 500);
     }
   });
+  sendTrackAndArtist();
   setTimeout(() => {
-    webview.executeJavaScript("__am.getMusicTitle();", false, (track) => {
-      webview.executeJavaScript("__am.getArtist();", false, (artist) => {
+    webview.executeJavaScript("__am.getSongImage();", false, image => {
+      ipcRenderer.send("setTrayImage", image);
+    });
+  }, 2000);
+  handleLyrics();
+  ipcRenderer.send("sendPlayingStatus", false);
+};
+
+const sendTrackAndArtist = () => {
+  setTimeout(() => {
+    webview.executeJavaScript("__am.getMusicTitle();", false, track => {
+      webview.executeJavaScript("__am.getArtist();", false, artist => {
         ipcRenderer.send("setTrackAndArtist", [track, artist]);
       });
     });
   }, 1000);
-  webview.executeJavaScript("__am.getSongImage();", false, (image) => {
-    ipcRenderer.send("setTrayImage", image);
-  });
-  handleLyrics();
-  ipcRenderer.send("sendPlayingStatus", false);
 };
 
 /**
@@ -165,7 +171,7 @@ const closeOutput = () => {
 
 const handleLyrics = () => {
   if (settings.get("lyrics")) {
-    webview.executeJavaScript("__am.hasSongText();", false, (textAv) => {
+    webview.executeJavaScript("__am.hasSongText();", false, textAv => {
       webview.executeJavaScript("__am.clearInterval();", false, () => {
         if (textAv) {
           showOutput();
@@ -213,6 +219,15 @@ ipcRenderer.on("previousTrack", () => {
   webview.executeJavaScript("__am.previousTrack();", false, () => {
     clearLyricsAndRestart();
   });
+});
+
+ipcRenderer.on("forceTrackAndArtist", () => {
+  sendTrackAndArtist();
+  setTimeout(() => {
+    webview.executeJavaScript("__am.getSongImage();", false, image => {
+      ipcRenderer.send("setTrayImage", image);
+    });
+  }, 2000);
 });
 
 /**

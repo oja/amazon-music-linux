@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as settings from "electron-settings";
 import * as socketIo from "socket.io";
+import { NativeImage } from "electron";
 
 export class Connection {
   public socket: any;
@@ -63,6 +64,9 @@ export class Connection {
         socket.emit("setTrack", track);
       });
     });
+    socket.on("connection", () => {
+      callback("connected", this.setTrackAndArtist);
+    });
   };
 
   public setTrack = (track: string) => {
@@ -82,4 +86,10 @@ export class Connection {
       this.socket.emit("TracksInPlaylist", trackList);
     }
   };
+
+  public sendTrackImage = (image: string) => {
+    if (this.socket !== undefined) {
+      this.socket.emit("TrackImage", image);
+    }
+  }
 }

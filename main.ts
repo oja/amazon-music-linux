@@ -162,6 +162,7 @@ function createWindow() {
   });
   connection = new Connection();
   connection.startServer(() => {
+    mainWindow.webContents.send("forceTrackAndArtist");
     connection.setListener(connection.socket, (message: string) => {
       switch (message) {
         case "playAndPause":
@@ -226,6 +227,7 @@ ipcMain.on("setTrayImage", (event: Event, arg: any) => {
   request(options, (err: Error, resp: any, body: Buffer) => {
     if (!err) {
       tray.setImage(nativeImage.createFromBuffer(body));
+      connection.sendTrackImage(body.toString("base64"));
     } else {
       tray.setImage(imageLocation);
     }
